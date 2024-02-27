@@ -13,10 +13,13 @@ namespace Lists_and_Randomization
 
         Random generator;
 
+        List<Texture2D> textures;
         List<Texture2D> planetTextures;
+
+
         List<Rectangle> planetRects;
 
-        Texture2D spaceTexture;
+        Texture2D spaceBackgroundTexture;
 
 
         public Game1()
@@ -31,14 +34,15 @@ namespace Lists_and_Randomization
             // TODO: Add your initialization logic here
             generator = new Random();
 
-            // Initialze 13 Retangles to draw
+            // Initialize 13 Rectangles to draw
             int size;
+            textures = new List<Texture2D>();
+            planetTextures = new List<Texture2D>();
             planetRects = new List<Rectangle>();
-            for (int i = 0; i < 13; i++)
+            for (int i = 0; i < 30; i++)
             {
                 size = generator.Next(35, 51);
                 planetRects.Add(new Rectangle(generator.Next(_graphics.PreferredBackBufferWidth - 50), generator.Next(_graphics.PreferredBackBufferHeight - 50), size, size));
-
             }
             base.Initialize();
         }
@@ -49,11 +53,14 @@ namespace Lists_and_Randomization
 
             // TODO: use this.Content to load your game content here
 
-            spaceTexture = Content.Load<Texture2D>("Images/space_background");
+            spaceBackgroundTexture = Content.Load<Texture2D>("Images/space_background");
             // Load textures into a list
-            planetTextures = new List<Texture2D>();
             for (int i = 1; i <= 13; i++)
-                planetTextures.Add(Content.Load<Texture2D>("Images/16-bit-planet" + i));
+                textures.Add(Content.Load<Texture2D>("Images/16-bit-planet" + i));
+            // Create List of random Textures that will be drawn (this must be done after we have loaded all 13 textures into our program)
+            for (int i = 0; i < planetRects.Count; i++)
+                planetTextures.Add(textures[generator.Next(textures.Count)]);
+        
         }
 
         protected override void Update(GameTime gameTime)
@@ -73,7 +80,7 @@ namespace Lists_and_Randomization
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(spaceTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+            _spriteBatch.Draw(spaceBackgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
             for (int i = 0; i < planetRects.Count; i++)
                 _spriteBatch.Draw(planetTextures[i], planetRects[i], Color.White);
 
