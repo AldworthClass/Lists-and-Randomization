@@ -11,6 +11,8 @@ namespace Lists_and_Randomization
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        MouseState mouseState;
+
         Random generator;
 
         List<Texture2D> textures;
@@ -21,6 +23,10 @@ namespace Lists_and_Randomization
 
         Texture2D spaceBackgroundTexture;
 
+        int size;
+        float seconds;
+        float startTimer;
+        float respawnTime;
 
         public Game1()
         {
@@ -33,9 +39,12 @@ namespace Lists_and_Randomization
         {
             // TODO: Add your initialization logic here
             generator = new Random();
+            
+            seconds = 0f;
+            respawnTime = 3f;
+            startTimer = 0f;
 
             // Initialize 13 Rectangles to draw
-            int size;
             textures = new List<Texture2D>();
             planetTextures = new List<Texture2D>();
             planetRects = new List<Rectangle>();
@@ -65,6 +74,31 @@ namespace Lists_and_Randomization
 
         protected override void Update(GameTime gameTime)
         {
+            mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed)
+                for(int i = 0; i < planetRects.Count; i++)
+                {
+                    if (planetRects[i].Contains(mouseState.Position))
+                    {
+                        planetRects.RemoveAt(i);
+                        planetTextures.RemoveAt(i);
+                        i--;
+                    }
+                }
+
+            // Calculates number of seconds since timer started
+            seconds = (float)gameTime.TotalGameTime.TotalSeconds - startTimer;
+            // After 3 seconds, a new planet is added
+            if (seconds > respawnTime)
+            {
+                size = generator.Next(35, 51);
+                planetTextures.Add(textures[generator.Next(textures.Count)]);
+                planetRects.Add(new Rectangle(generator.Next(_graphics.PreferredBackBufferWidth - 50), generator.Next(_graphics.PreferredBackBufferHeight - 50), size, size));
+                
+                // Restarts Timer
+                startTimer = (float)gameTime.TotalGameTime.TotalSeconds;
+            }
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
