@@ -11,7 +11,7 @@ namespace Lists_and_Randomization
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        MouseState mouseState;
+        MouseState mouseState, prevMouseState;
 
         Random generator;
 
@@ -74,8 +74,9 @@ namespace Lists_and_Randomization
 
         protected override void Update(GameTime gameTime)
         {
+            prevMouseState = mouseState;
             mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
                 for(int i = 0; i < planetRects.Count; i++)
                 {
                     if (planetRects[i].Contains(mouseState.Position))
@@ -100,6 +101,9 @@ namespace Lists_and_Randomization
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            if (planetRects.Count == 0)
                 Exit();
 
             // TODO: Add your update logic here
