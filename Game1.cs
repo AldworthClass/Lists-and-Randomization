@@ -85,7 +85,7 @@ namespace Lists_and_Randomization
                     }
                 }
 
-            // Calculates number of seconds since timer started
+            // Calculates number of seconds since timer was last reset
             seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
             // After 3 seconds, a new planet is added
             if (seconds > respawnTime)
