@@ -76,7 +76,7 @@ namespace Lists_and_Randomization
         {
             prevMouseState = mouseState;
             mouseState = Mouse.GetState();
-            if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+            if (LeftMouseClick())
                 for(int i = 0; i < planetRects.Count; i++)
                 {
                     if (planetRects[i].Contains(mouseState.Position))
@@ -126,5 +126,11 @@ namespace Lists_and_Randomization
 
             base.Draw(gameTime);
         }
+
+        public bool LeftMouseClick() 
+        {
+            return mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released;
+        }
+
     }
 }
