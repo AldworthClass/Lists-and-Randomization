@@ -14,6 +14,7 @@ namespace Lists_and_Randomization
         MouseState mouseState, prevMouseState;
 
         Random generator;
+        Rectangle window;
 
         List<Texture2D> textures;
         List<Texture2D> planetTextures;
@@ -25,7 +26,6 @@ namespace Lists_and_Randomization
 
         int size;
         float seconds;
-        float startTimer;
         float respawnTime;
 
         public Game1()
@@ -39,10 +39,10 @@ namespace Lists_and_Randomization
         {
             // TODO: Add your initialization logic here
             generator = new Random();
+            window = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
             
             seconds = 0f;
             respawnTime = 3f;
-            startTimer = 0f;
 
             // Initialize 13 Rectangles to draw
             textures = new List<Texture2D>();
@@ -51,7 +51,7 @@ namespace Lists_and_Randomization
             for (int i = 0; i < 30; i++)
             {
                 size = generator.Next(35, 51);
-                planetRects.Add(new Rectangle(generator.Next(_graphics.PreferredBackBufferWidth - 50), generator.Next(_graphics.PreferredBackBufferHeight - 50), size, size));
+                planetRects.Add(new Rectangle(generator.Next(window.Width - size), generator.Next(window.Height - size), size, size));
             }
             base.Initialize();
         }
@@ -88,16 +88,16 @@ namespace Lists_and_Randomization
                 }
 
             // Calculates number of seconds since timer started
-            seconds = (float)gameTime.TotalGameTime.TotalSeconds - startTimer;
+            seconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
             // After 3 seconds, a new planet is added
             if (seconds > respawnTime)
             {
                 size = generator.Next(35, 51);
                 planetTextures.Add(textures[generator.Next(textures.Count)]);
                 planetRects.Add(new Rectangle(generator.Next(_graphics.PreferredBackBufferWidth - 50), generator.Next(_graphics.PreferredBackBufferHeight - 50), size, size));
-                
+
                 // Restarts Timer
-                startTimer = (float)gameTime.TotalGameTime.TotalSeconds;
+                seconds = 0f;
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -118,7 +118,7 @@ namespace Lists_and_Randomization
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
-            _spriteBatch.Draw(spaceBackgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+            _spriteBatch.Draw(spaceBackgroundTexture, window, Color.White);
             for (int i = 0; i < planetRects.Count; i++)
                 _spriteBatch.Draw(planetTextures[i], planetRects[i], Color.White);
 
